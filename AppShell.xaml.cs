@@ -1,10 +1,12 @@
-﻿namespace RepeatMusicPlayer
+﻿using RepeatMusicPlayer;
+
+namespace RepeatMusicPlayer;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        Routing.RegisterRoute(nameof(NowPlayingPage), typeof(NowPlayingPage));
     }
 }
