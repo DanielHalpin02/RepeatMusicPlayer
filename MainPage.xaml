@@ -4,18 +4,24 @@
              x:Class="RepeatMusicPlayer.MainPage"
              Title="Library">
 
-    <CollectionView x:Name="SongsCollectionView"
-                     ItemsSource="{Binding Songs}"
-                     SelectionMode="Single"
-                     SelectionChanged="OnSongSelected">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <VerticalStackLayout Padding="10">
-                    <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
-                    <Label Text="{Binding Artist}" FontSize="14" TextColor="Gray" />
-                </VerticalStackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <VerticalStackLayout>
+
+        <Button Text="Playlists" Clicked="OnPlaylistsClicked" />
+
+        <CollectionView x:Name="SongsCollectionView"
+                         ItemsSource="{Binding Songs}"
+                         SelectionMode="Single"
+                         SelectionChanged="OnSongSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <VerticalStackLayout Padding="10">
+                        <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
+                        <Label Text="{Binding Artist}" FontSize="14" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
 
 </ContentPage>
