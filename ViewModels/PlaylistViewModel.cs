@@ -20,6 +20,17 @@ public class PlaylistViewModel : INotifyPropertyChanged
         }
     }
 
+    private Playlist _selectedPlaylist;
+    public Playlist SelectedPlaylist
+    {
+        get => _selectedPlaylist;
+        set
+        {
+            _selectedPlaylist = value;
+            OnPropertyChanged();
+        }
+    }
+
     public void AddPlaylist()
     {
         if (string.IsNullOrWhiteSpace(NewPlaylistName))
@@ -27,6 +38,15 @@ public class PlaylistViewModel : INotifyPropertyChanged
 
         Playlists.Add(new Playlist { Name = NewPlaylistName });
         NewPlaylistName = string.Empty;
+    }
+
+    public void AddSongToSelectedPlaylist(Song song)
+    {
+        if (SelectedPlaylist == null || song == null)
+            return;
+
+        if (!SelectedPlaylist.Songs.Contains(song))
+            SelectedPlaylist.Songs.Add(song);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

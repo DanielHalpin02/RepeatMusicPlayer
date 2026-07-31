@@ -1,15 +1,14 @@
-﻿namespace RepeatMusicPlayer
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+﻿using RepeatMusicPlayer.ViewModels;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+namespace RepeatMusicPlayer;
+
+public partial class App : Application
+{
+    public static PlaylistViewModel PlaylistViewModel { get; } = new();
+
+    public App()
+    {
+        InitializeComponent();
+        MainPage = new AppShell();
     }
 }
