@@ -64,6 +64,12 @@
 		<MauiXaml Update="PlaylistPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="PlaylistDetailPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="SongPickerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,6 +77,12 @@
 			<Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="PlaylistPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="PlaylistDetailPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="SongPickerPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</None>
 	</ItemGroup>
