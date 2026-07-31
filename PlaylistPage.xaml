@@ -14,7 +14,9 @@
             <Button Text="Add" Clicked="OnAddPlaylistClicked" />
         </HorizontalStackLayout>
 
-        <CollectionView ItemsSource="{Binding Playlists}">
+        <CollectionView ItemsSource="{Binding Playlists}"
+                         SelectionMode="Single"
+                         SelectionChanged="OnPlaylistSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Label Text="{Binding Name}" FontSize="18" Padding="0,10" />
