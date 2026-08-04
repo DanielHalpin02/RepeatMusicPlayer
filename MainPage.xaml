@@ -6,7 +6,11 @@
 
     <VerticalStackLayout>
 
-        <Button Text="Playlists" Clicked="OnPlaylistsClicked" />
+        <HorizontalStackLayout Spacing="10" Padding="10">
+            <Button Text="Playlists" Clicked="OnPlaylistsClicked" />
+            <Button Text="Add Song" Clicked="OnAddSongClicked" />
+            <Button Text="Scan Folder" Clicked="OnScanFolderClicked" />
+        </HorizontalStackLayout>
 
         <CollectionView x:Name="SongsCollectionView"
                          ItemsSource="{Binding Songs}"

@@ -1,13 +1,36 @@
-﻿using RepeatMusicPlayer.ViewModels;
+﻿using CommunityToolkit.Maui.Storage;
+using RepeatMusicPlayer.ViewModels;
 
 namespace RepeatMusicPlayer;
 
 public partial class MainPage : ContentPage
 {
+    private readonly LibraryViewModel _viewModel;
+
     public MainPage()
     {
         InitializeComponent();
-        BindingContext = new LibraryViewModel();
+        _viewModel = new LibraryViewModel();
+        BindingContext = _viewModel;
+    }
+
+    private async void OnPlaylistsClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(PlaylistPage));
+    }
+
+    private async void OnAddSongClicked(object sender, EventArgs e)
+    {
+        await _viewModel.PickSongAsync();
+    }
+
+    private async void OnScanFolderClicked(object sender, EventArgs e)
+    {
+        var folder = await FolderPicker.Default.PickAsync();
+        if (folder.IsSuccessful)
+        {
+            await _viewModel.ScanFolderAsync(folder.Folder.Path);
+        }
     }
 
     private async void OnSongSelected(object sender, SelectionChangedEventArgs e)
@@ -19,10 +42,5 @@ public partial class MainPage : ContentPage
                 { "Song", selectedSong }
             });
         }
-    }
-
-    private async void OnPlaylistsClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(PlaylistPage));
     }
 }
