@@ -1,20 +1,15 @@
-using Microsoft.Maui.Controls;
 using RepeatMusicPlayer.Models;
-using RepeatMusicPlayer.Services;
-using RepeatMusicPlayer.ViewModels;
 
 namespace RepeatMusicPlayer;
 
 public partial class SongPickerPage : ContentPage
 {
-    private readonly LibraryService _libraryService = new();
-
     public List<Song> Songs { get; set; }
 
     public SongPickerPage()
     {
         InitializeComponent();
-        Songs = _libraryService.GetSongs();
+        Songs = App.LibraryService.Songs;
         BindingContext = this;
     }
 
