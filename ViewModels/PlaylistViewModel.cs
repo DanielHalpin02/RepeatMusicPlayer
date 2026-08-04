@@ -40,6 +40,14 @@ public class PlaylistViewModel : INotifyPropertyChanged
         NewPlaylistName = string.Empty;
     }
 
+    public void DeletePlaylist(Playlist playlist)
+    {
+        if (playlist == null)
+            return;
+
+        Playlists.Remove(playlist);
+    }
+
     public void AddSongToSelectedPlaylist(Song song)
     {
         if (SelectedPlaylist == null || song == null)
@@ -47,6 +55,14 @@ public class PlaylistViewModel : INotifyPropertyChanged
 
         if (!SelectedPlaylist.Songs.Contains(song))
             SelectedPlaylist.Songs.Add(song);
+    }
+
+    public void RemoveSongFromSelectedPlaylist(Song song)
+    {
+        if (SelectedPlaylist == null || song == null)
+            return;
+
+        SelectedPlaylist.Songs.Remove(song);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
