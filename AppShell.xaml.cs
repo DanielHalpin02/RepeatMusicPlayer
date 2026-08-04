@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using RepeatMusicPlayer;
+﻿using RepeatMusicPlayer;
 
 namespace RepeatMusicPlayer;
 
@@ -12,5 +11,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(PlaylistPage), typeof(PlaylistPage));
         Routing.RegisterRoute(nameof(PlaylistDetailPage), typeof(PlaylistDetailPage));
         Routing.RegisterRoute(nameof(SongPickerPage), typeof(SongPickerPage));
+        Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
     }
 }

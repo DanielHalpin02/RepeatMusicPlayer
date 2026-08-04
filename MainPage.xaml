@@ -10,6 +10,7 @@
             <Button Text="Playlists" Clicked="OnPlaylistsClicked" />
             <Button Text="Add Song" Clicked="OnAddSongClicked" />
             <Button Text="Scan Folder" Clicked="OnScanFolderClicked" />
+            <Button Text="Settings" Clicked="OnSettingsClicked" />
         </HorizontalStackLayout>
 
         <CollectionView x:Name="SongsCollectionView"

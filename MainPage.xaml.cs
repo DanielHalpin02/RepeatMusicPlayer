@@ -33,6 +33,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private async void OnSettingsClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
+    }
+
     private async void OnSongSelected(object sender, SelectionChangedEventArgs e)
     {
         if (e.CurrentSelection.FirstOrDefault() is Models.Song selectedSong)
