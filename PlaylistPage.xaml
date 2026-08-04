@@ -19,7 +19,16 @@
                          SelectionChanged="OnPlaylistSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Label Text="{Binding Name}" FontSize="18" Padding="0,10" />
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Delete"
+                                           BackgroundColor="Red"
+                                           Invoked="OnDeletePlaylistSwiped" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Label Text="{Binding Name}" FontSize="18" Padding="0,10" />
+                    </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

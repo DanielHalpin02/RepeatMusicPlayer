@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RepeatMusicPlayer.PlaylistDetailPage"
+             Title="{Binding SelectedPlaylist.Name}">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <CollectionView ItemsSource="{Binding SelectedPlaylist.Songs}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Remove"
+                                           BackgroundColor="Red"
+                                           Invoked="OnRemoveSongSwiped" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <VerticalStackLayout Padding="10">
+                            <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
+                            <Label Text="{Binding Artist}" FontSize="14" TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Add songs from library" Clicked="OnAddSongsClicked" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

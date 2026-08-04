@@ -1,4 +1,3 @@
-using Microsoft.Maui.Controls;
 using RepeatMusicPlayer.ViewModels;
 
 namespace RepeatMusicPlayer;
@@ -19,5 +18,13 @@ public partial class PlaylistDetailPage : ContentPage
     private async void OnAddSongsClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(SongPickerPage));
+    }
+
+    private void OnRemoveSongSwiped(object sender, EventArgs e)
+    {
+        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Models.Song song)
+        {
+            App.PlaylistViewModel.RemoveSongFromSelectedPlaylist(song);
+        }
     }
 }

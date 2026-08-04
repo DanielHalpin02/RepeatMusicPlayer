@@ -29,4 +29,12 @@ public partial class PlaylistPage : ContentPage
             });
         }
     }
+
+    private void OnDeletePlaylistSwiped(object sender, EventArgs e)
+    {
+        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Models.Playlist playlist)
+        {
+            _viewModel.DeletePlaylist(playlist);
+        }
+    }
 }
