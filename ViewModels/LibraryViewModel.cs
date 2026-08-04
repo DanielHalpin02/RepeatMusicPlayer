@@ -8,7 +8,7 @@ namespace RepeatMusicPlayer.ViewModels;
 
 public class LibraryViewModel : INotifyPropertyChanged
 {
-    private readonly LibraryService _libraryService = new();
+    private readonly LibraryService _libraryService;
 
     public ObservableCollection<Song> Songs { get; set; } = new();
 
@@ -25,8 +25,23 @@ public class LibraryViewModel : INotifyPropertyChanged
 
     public LibraryViewModel()
     {
-        var songs = _libraryService.GetSongs();
-        foreach (var song in songs)
+        _libraryService = App.LibraryService;
+
+        foreach (var song in _libraryService.Songs)
+            Songs.Add(song);
+    }
+
+    public async Task PickSongAsync()
+    {
+        var song = await _libraryService.PickAndAddSongAsync();
+        if (song != null)
+            Songs.Add(song);
+    }
+
+    public async Task ScanFolderAsync(string folderPath)
+    {
+        var newSongs = await _libraryService.ScanFolderAsync(folderPath);
+        foreach (var song in newSongs)
             Songs.Add(song);
     }
 

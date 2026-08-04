@@ -4,17 +4,65 @@ namespace RepeatMusicPlayer.Services;
 
 public class LibraryService
 {
-    public List<Song> GetSongs()
-    {
-        return new List<Song>
+    public List<Song> Songs { get; set; } = new();
+
+    private static readonly FilePickerFileType AudioFileType = new(
+        new Dictionary<DevicePlatform, IEnumerable<string>>
         {
-            new Song { Title = "Test Track One", Artist = "Artist A", Album = "Demo Album", Duration = TimeSpan.FromMinutes(3.2) },
-            new Song { Title = "Test Track Two", Artist = "Artist B", Album = "Demo Album", Duration = TimeSpan.FromMinutes(4.1) },
-            new Song { Title = "Test Track Three", Artist = "Artist C", Album = "Another Album", Duration = TimeSpan.FromMinutes(2.5) },
-            new Song { Title = "Midnight Drive", Artist = "Artist D", Album = "Night Sessions", Duration = TimeSpan.FromMinutes(3.8) },
-            new Song { Title = "Coastal Echoes", Artist = "Artist E", Album = "Night Sessions", Duration = TimeSpan.FromMinutes(4.4) },
-            new Song { Title = "Static Bloom", Artist = "Artist F", Album = "Another Album", Duration = TimeSpan.FromMinutes(2.9) },
-            new Song { Title = "Glass Horizon", Artist = "Artist G", Album = "Demo Album", Duration = TimeSpan.FromMinutes(3.5) },
+            { DevicePlatform.WinUI, new[] { ".mp3", ".wav", ".ogg", ".flac", ".m4a" } },
+            { DevicePlatform.Android, new[] { "audio/*" } }
+        });
+
+    public async Task<Song> PickAndAddSongAsync()
+    {
+        var result = await FilePicker.Default.PickAsync(new PickOptions
+        {
+            PickerTitle = "Select an audio file",
+            FileTypes = AudioFileType
+        });
+
+        if (result == null)
+            return null;
+
+        var song = new Song
+        {
+            Title = Path.GetFileNameWithoutExtension(result.FileName),
+            Artist = "Unknown Artist",
+            Album = "Unknown Album",
+            FilePath = result.FullPath,
+            Duration = TimeSpan.Zero
         };
+
+        Songs.Add(song);
+        return song;
+    }
+
+    public async Task<List<Song>> ScanFolderAsync(string folderPath)
+    {
+        var addedSongs = new List<Song>();
+
+        if (!Directory.Exists(folderPath))
+            return addedSongs;
+
+        var audioExtensions = new[] { ".mp3", ".wav", ".ogg", ".flac", ".m4a" };
+        var files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
+                              .Where(f => audioExtensions.Contains(Path.GetExtension(f).ToLower()));
+
+        foreach (var file in files)
+        {
+            var song = new Song
+            {
+                Title = Path.GetFileNameWithoutExtension(file),
+                Artist = "Unknown Artist",
+                Album = "Unknown Album",
+                FilePath = file,
+                Duration = TimeSpan.Zero
+            };
+
+            Songs.Add(song);
+            addedSongs.Add(song);
+        }
+
+        return addedSongs;
     }
 }
