@@ -9,19 +9,17 @@
         <CollectionView ItemsSource="{Binding SelectedPlaylist.Songs}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <SwipeView>
-                        <SwipeView.RightItems>
-                            <SwipeItems>
-                                <SwipeItem Text="Remove"
-                                           BackgroundColor="Red"
-                                           Invoked="OnRemoveSongSwiped" />
-                            </SwipeItems>
-                        </SwipeView.RightItems>
-                        <VerticalStackLayout Padding="10">
+                    <Grid ColumnDefinitions="*,Auto" Padding="0,10">
+                        <VerticalStackLayout>
                             <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
                             <Label Text="{Binding Artist}" FontSize="14" TextColor="Gray" />
                         </VerticalStackLayout>
-                    </SwipeView>
+                        <Button Grid.Column="1"
+                                Text="Remove"
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                Clicked="OnRemoveSongClicked" />
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

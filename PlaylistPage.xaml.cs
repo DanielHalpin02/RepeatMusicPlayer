@@ -30,9 +30,9 @@ public partial class PlaylistPage : ContentPage
         }
     }
 
-    private void OnDeletePlaylistSwiped(object sender, EventArgs e)
+    private void OnDeletePlaylistClicked(object sender, EventArgs e)
     {
-        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Models.Playlist playlist)
+        if (sender is Button button && button.BindingContext is Models.Playlist playlist)
         {
             _viewModel.DeletePlaylist(playlist);
         }

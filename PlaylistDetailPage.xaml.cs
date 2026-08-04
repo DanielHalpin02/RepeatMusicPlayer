@@ -20,9 +20,9 @@ public partial class PlaylistDetailPage : ContentPage
         await Shell.Current.GoToAsync(nameof(SongPickerPage));
     }
 
-    private void OnRemoveSongSwiped(object sender, EventArgs e)
+    private void OnRemoveSongClicked(object sender, EventArgs e)
     {
-        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Models.Song song)
+        if (sender is Button button && button.BindingContext is Models.Song song)
         {
             App.PlaylistViewModel.RemoveSongFromSelectedPlaylist(song);
         }
