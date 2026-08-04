@@ -26,8 +26,22 @@ public class LibraryViewModel : INotifyPropertyChanged
     public LibraryViewModel()
     {
         _libraryService = App.LibraryService;
+        RefreshSortedSongs();
+    }
 
-        foreach (var song in _libraryService.Songs)
+    public void RefreshSortedSongs()
+    {
+        Songs.Clear();
+
+        var sortOrder = App.SettingsService.DefaultSortOrder;
+        IEnumerable<Song> sorted = sortOrder switch
+        {
+            "Artist" => _libraryService.Songs.OrderBy(s => s.Artist),
+            "Album" => _libraryService.Songs.OrderBy(s => s.Album),
+            _ => _libraryService.Songs.OrderBy(s => s.Title),
+        };
+
+        foreach (var song in sorted)
             Songs.Add(song);
     }
 
@@ -35,14 +49,14 @@ public class LibraryViewModel : INotifyPropertyChanged
     {
         var song = await _libraryService.PickAndAddSongAsync();
         if (song != null)
-            Songs.Add(song);
+            RefreshSortedSongs();
     }
 
     public async Task ScanFolderAsync(string folderPath)
     {
         var newSongs = await _libraryService.ScanFolderAsync(folderPath);
-        foreach (var song in newSongs)
-            Songs.Add(song);
+        if (newSongs.Count > 0)
+            RefreshSortedSongs();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

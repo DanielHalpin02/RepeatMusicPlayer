@@ -14,6 +14,12 @@ public partial class MainPage : ContentPage
         BindingContext = _viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.RefreshSortedSongs();
+    }
+
     private async void OnPlaylistsClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(PlaylistPage));
