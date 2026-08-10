@@ -5,7 +5,6 @@ using RepeatMusicPlayer.Models;
 
 namespace RepeatMusicPlayer.ViewModels;
 
-[QueryProperty(nameof(CurrentSong), "Song")]
 public class NowPlayingViewModel : INotifyPropertyChanged
 {
     private readonly IAudioManager _audioManager;

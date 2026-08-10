@@ -1,28 +1,22 @@
-using Plugin.Maui.Audio;
-using RepeatMusicPlayer.ViewModels;
-
 namespace RepeatMusicPlayer;
 
 public partial class NowPlayingPage : ContentPage
 {
-    private readonly NowPlayingViewModel _viewModel;
-
-    public NowPlayingPage(IAudioManager audioManager)
+    public NowPlayingPage()
     {
         InitializeComponent();
-        _viewModel = new NowPlayingViewModel(audioManager);
-        BindingContext = _viewModel;
+        BindingContext = App.NowPlayingViewModel;
     }
 
-    protected override void OnDisappearing()
+    protected override void OnAppearing()
     {
-        base.OnDisappearing();
-        _viewModel.StopAndDispose();
+        base.OnAppearing();
+        PlayPauseButton.Text = App.NowPlayingViewModel.IsPlaying ? "Pause" : "Play";
     }
 
     private void OnPlayPauseClicked(object sender, EventArgs e)
     {
-        _viewModel.PlayPause();
-        PlayPauseButton.Text = _viewModel.IsPlaying ? "Pause" : "Play";
+        App.NowPlayingViewModel.PlayPause();
+        PlayPauseButton.Text = App.NowPlayingViewModel.IsPlaying ? "Pause" : "Play";
     }
 }

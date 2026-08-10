@@ -48,10 +48,8 @@ public partial class MainPage : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is Models.Song selectedSong)
         {
-            await Shell.Current.GoToAsync(nameof(NowPlayingPage), new Dictionary<string, object>
-            {
-                { "Song", selectedSong }
-            });
+            App.NowPlayingViewModel.CurrentSong = selectedSong;
+            await Shell.Current.GoToAsync(nameof(NowPlayingPage));
         }
     }
 }
