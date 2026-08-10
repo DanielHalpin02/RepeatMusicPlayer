@@ -1,10 +1,13 @@
-﻿using RepeatMusicPlayer.Models;
+﻿using Id3;
+using RepeatMusicPlayer.Models;
 
 namespace RepeatMusicPlayer.Services;
 
 public class LibraryService
 {
-    public List<Song> Songs { get; set; } = new();
+    private readonly PersistenceService _persistenceService;
+
+    public List<Song> Songs { get; set; }
 
     private static readonly FilePickerFileType AudioFileType = new(
         new Dictionary<DevicePlatform, IEnumerable<string>>
@@ -12,6 +15,12 @@ public class LibraryService
             { DevicePlatform.WinUI, new[] { ".mp3", ".wav", ".ogg", ".flac", ".m4a" } },
             { DevicePlatform.Android, new[] { "audio/*" } }
         });
+
+    public LibraryService()
+    {
+        _persistenceService = App.PersistenceService;
+        Songs = _persistenceService.LoadLibrary();
+    }
 
     public async Task<Song> PickAndAddSongAsync()
     {
@@ -24,16 +33,9 @@ public class LibraryService
         if (result == null)
             return null;
 
-        var song = new Song
-        {
-            Title = Path.GetFileNameWithoutExtension(result.FileName),
-            Artist = "Unknown Artist",
-            Album = "Unknown Album",
-            FilePath = result.FullPath,
-            Duration = TimeSpan.Zero
-        };
-
+        var song = BuildSongFromFile(result.FullPath);
         Songs.Add(song);
+        SaveLibrary();
         return song;
     }
 
@@ -50,19 +52,61 @@ public class LibraryService
 
         foreach (var file in files)
         {
-            var song = new Song
-            {
-                Title = Path.GetFileNameWithoutExtension(file),
-                Artist = "Unknown Artist",
-                Album = "Unknown Album",
-                FilePath = file,
-                Duration = TimeSpan.Zero
-            };
-
+            var song = BuildSongFromFile(file);
             Songs.Add(song);
             addedSongs.Add(song);
         }
 
+        SaveLibrary();
         return addedSongs;
+    }
+
+    private Song BuildSongFromFile(string filePath)
+    {
+        var song = new Song
+        {
+            Title = Path.GetFileNameWithoutExtension(filePath),
+            Artist = "Unknown Artist",
+            Album = "Unknown Album",
+            FilePath = filePath,
+            Duration = TimeSpan.Zero
+        };
+
+        // Only .mp3 files carry ID3 tags; other formats keep the filename-based fallback above.
+        if (Path.GetExtension(filePath).ToLower() == ".mp3")
+        {
+            try
+            {
+                using var mp3 = new Mp3(filePath);
+                var tag = mp3.GetTag(Id3TagFamily.Version2X) ?? mp3.GetTag(Id3TagFamily.Version1X);
+
+                if (tag != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(tag.Title))
+                        song.Title = tag.Title;
+
+                    if (tag.Artists != null)
+                    {
+                        var artistString = tag.Artists.ToString();
+                        if (!string.IsNullOrWhiteSpace(artistString))
+                            song.Artist = artistString;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(tag.Album))
+                        song.Album = tag.Album;
+                }
+            }
+            catch
+            {
+                // If the tag can't be read, we already have filename-based fallbacks above.
+            }
+        }
+
+        return song;
+    }
+
+    public void SaveLibrary()
+    {
+        _persistenceService.SaveLibrary(Songs);
     }
 }
