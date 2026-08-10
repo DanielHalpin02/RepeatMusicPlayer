@@ -19,4 +19,26 @@ public partial class NowPlayingPage : ContentPage
         App.NowPlayingViewModel.PlayPause();
         PlayPauseButton.Text = App.NowPlayingViewModel.IsPlaying ? "Pause" : "Play";
     }
+
+    private void OnNextClicked(object sender, EventArgs e)
+    {
+        App.NowPlayingViewModel.SkipNext();
+        PlayPauseButton.Text = "Play";
+    }
+
+    private void OnPreviousClicked(object sender, EventArgs e)
+    {
+        App.NowPlayingViewModel.SkipPrevious();
+        PlayPauseButton.Text = "Play";
+    }
+
+    private void OnSeekStarted(object sender, EventArgs e)
+    {
+        App.NowPlayingViewModel.PauseTimerForSeeking();
+    }
+
+    private void OnSeekCompleted(object sender, EventArgs e)
+    {
+        App.NowPlayingViewModel.SeekTo(SeekSlider.Value);
+    }
 }

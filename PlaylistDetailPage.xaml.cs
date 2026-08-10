@@ -32,6 +32,7 @@ public partial class PlaylistDetailPage : ContentPage
     {
         if (e.CurrentSelection.FirstOrDefault() is Models.Song selectedSong)
         {
+            App.NowPlayingViewModel.PlaybackQueue = App.PlaylistViewModel.SelectedPlaylist.Songs.ToList();
             App.NowPlayingViewModel.CurrentSong = selectedSong;
             await Shell.Current.GoToAsync(nameof(NowPlayingPage));
         }

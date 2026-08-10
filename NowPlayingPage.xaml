@@ -16,10 +16,20 @@
                TextColor="Gray"
                HorizontalOptions="Center" />
 
-        <Button x:Name="PlayPauseButton"
-                Text="Play"
-                Clicked="OnPlayPauseClicked"
-                HorizontalOptions="Center" />
+        <Slider x:Name="SeekSlider"
+                Minimum="0"
+                Maximum="{Binding Duration}"
+                Value="{Binding Position}"
+                DragStarted="OnSeekStarted"
+                DragCompleted="OnSeekCompleted" />
+
+        <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+            <Button Text="Previous" Clicked="OnPreviousClicked" />
+            <Button x:Name="PlayPauseButton"
+                    Text="Play"
+                    Clicked="OnPlayPauseClicked" />
+            <Button Text="Next" Clicked="OnNextClicked" />
+        </HorizontalStackLayout>
 
     </VerticalStackLayout>
 
