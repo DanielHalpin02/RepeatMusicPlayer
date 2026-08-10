@@ -2,11 +2,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RepeatMusicPlayer.Models;
+using RepeatMusicPlayer.Services;
 
 namespace RepeatMusicPlayer.ViewModels;
 
 public class PlaylistViewModel : INotifyPropertyChanged
 {
+    private readonly PersistenceService _persistenceService;
+
     public ObservableCollection<Playlist> Playlists { get; set; } = new();
 
     private string _newPlaylistName;
@@ -31,6 +34,14 @@ public class PlaylistViewModel : INotifyPropertyChanged
         }
     }
 
+    public PlaylistViewModel()
+    {
+        _persistenceService = App.PersistenceService;
+
+        foreach (var playlist in _persistenceService.LoadPlaylists())
+            Playlists.Add(playlist);
+    }
+
     public void AddPlaylist()
     {
         if (string.IsNullOrWhiteSpace(NewPlaylistName))
@@ -38,6 +49,7 @@ public class PlaylistViewModel : INotifyPropertyChanged
 
         Playlists.Add(new Playlist { Name = NewPlaylistName });
         NewPlaylistName = string.Empty;
+        SavePlaylists();
     }
 
     public void DeletePlaylist(Playlist playlist)
@@ -46,6 +58,7 @@ public class PlaylistViewModel : INotifyPropertyChanged
             return;
 
         Playlists.Remove(playlist);
+        SavePlaylists();
     }
 
     public void AddSongToSelectedPlaylist(Song song)
@@ -54,7 +67,10 @@ public class PlaylistViewModel : INotifyPropertyChanged
             return;
 
         if (!SelectedPlaylist.Songs.Contains(song))
+        {
             SelectedPlaylist.Songs.Add(song);
+            SavePlaylists();
+        }
     }
 
     public void RemoveSongFromSelectedPlaylist(Song song)
@@ -63,6 +79,12 @@ public class PlaylistViewModel : INotifyPropertyChanged
             return;
 
         SelectedPlaylist.Songs.Remove(song);
+        SavePlaylists();
+    }
+
+    public void SavePlaylists()
+    {
+        _persistenceService.SavePlaylists(Playlists.ToList());
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
