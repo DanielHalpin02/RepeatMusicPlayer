@@ -27,4 +27,13 @@ public partial class PlaylistDetailPage : ContentPage
             App.PlaylistViewModel.RemoveSongFromSelectedPlaylist(song);
         }
     }
+
+    private async void OnSongSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is Models.Song selectedSong)
+        {
+            App.NowPlayingViewModel.CurrentSong = selectedSong;
+            await Shell.Current.GoToAsync(nameof(NowPlayingPage));
+        }
+    }
 }

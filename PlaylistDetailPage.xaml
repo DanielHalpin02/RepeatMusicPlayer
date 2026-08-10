@@ -6,7 +6,9 @@
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <CollectionView ItemsSource="{Binding SelectedPlaylist.Songs}">
+        <CollectionView ItemsSource="{Binding SelectedPlaylist.Songs}"
+                         SelectionMode="Single"
+                         SelectionChanged="OnSongSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="*,Auto" Padding="0,10">
