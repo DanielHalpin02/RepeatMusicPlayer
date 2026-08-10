@@ -24,11 +24,26 @@
                 DragCompleted="OnSeekCompleted" />
 
         <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+            <Button x:Name="ShuffleButton" Text="Shuffle: Off" Clicked="OnShuffleClicked" />
+            <Button x:Name="RepeatButton" Text="Repeat: Off" Clicked="OnRepeatClicked" />
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
             <Button Text="Previous" Clicked="OnPreviousClicked" />
             <Button x:Name="PlayPauseButton"
                     Text="Play"
                     Clicked="OnPlayPauseClicked" />
             <Button Text="Next" Clicked="OnNextClicked" />
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <Label Text="Volume" VerticalOptions="Center" />
+            <Slider x:Name="VolumeSlider"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="{Binding Volume}"
+                    WidthRequest="150"
+                    ValueChanged="OnVolumeChanged" />
         </HorizontalStackLayout>
 
     </VerticalStackLayout>

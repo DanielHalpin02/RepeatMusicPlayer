@@ -5,11 +5,19 @@ using RepeatMusicPlayer.Models;
 
 namespace RepeatMusicPlayer.ViewModels;
 
+public enum RepeatMode
+{
+    Off,
+    RepeatOne,
+    RepeatAll
+}
+
 public class NowPlayingViewModel : INotifyPropertyChanged
 {
     private readonly IAudioManager _audioManager;
     private IAudioPlayer _audioPlayer;
     private IDispatcherTimer _positionTimer;
+    private readonly Random _random = new();
 
     public List<Song> PlaybackQueue { get; set; } = new();
 
@@ -58,6 +66,41 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         }
     }
 
+    private double _volume = 1.0;
+    public double Volume
+    {
+        get => _volume;
+        set
+        {
+            _volume = value;
+            OnPropertyChanged();
+            if (_audioPlayer != null)
+                _audioPlayer.Volume = value;
+        }
+    }
+
+    private bool _isShuffleOn;
+    public bool IsShuffleOn
+    {
+        get => _isShuffleOn;
+        set
+        {
+            _isShuffleOn = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private RepeatMode _repeatMode = RepeatMode.Off;
+    public RepeatMode RepeatMode
+    {
+        get => _repeatMode;
+        set
+        {
+            _repeatMode = value;
+            OnPropertyChanged();
+        }
+    }
+
     public NowPlayingViewModel(IAudioManager audioManager)
     {
         _audioManager = audioManager;
@@ -78,6 +121,7 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         if (File.Exists(CurrentSong.FilePath))
         {
             _audioPlayer = _audioManager.CreatePlayer(File.OpenRead(CurrentSong.FilePath));
+            _audioPlayer.Volume = Volume;
             IsPlaying = false;
             Position = 0;
             Duration = _audioPlayer.Duration;
@@ -115,28 +159,71 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         _isSeeking = false;
     }
 
+    public void ToggleShuffle()
+    {
+        IsShuffleOn = !IsShuffleOn;
+    }
+
+    public void CycleRepeatMode()
+    {
+        RepeatMode = RepeatMode switch
+        {
+            RepeatMode.Off => RepeatMode.RepeatAll,
+            RepeatMode.RepeatAll => RepeatMode.RepeatOne,
+            RepeatMode.RepeatOne => RepeatMode.Off,
+            _ => RepeatMode.Off
+        };
+    }
+
     public void SkipNext()
     {
-        SkipBy(1);
+        SkipBy(1, isAutoAdvance: false);
     }
 
     public void SkipPrevious()
     {
-        SkipBy(-1);
+        SkipBy(-1, isAutoAdvance: false);
     }
 
-    private void SkipBy(int direction)
+    private void SkipBy(int direction, bool isAutoAdvance)
     {
         if (PlaybackQueue == null || PlaybackQueue.Count == 0 || CurrentSong == null)
             return;
+
+        // Repeat One only restarts the same track on natural end, not on a manual Next/Previous click.
+        if (isAutoAdvance && RepeatMode == RepeatMode.RepeatOne)
+        {
+            SeekTo(0);
+            _audioPlayer?.Play();
+            IsPlaying = true;
+            return;
+        }
+
+        if (IsShuffleOn)
+        {
+            var nextIndex = _random.Next(PlaybackQueue.Count);
+            CurrentSong = PlaybackQueue[nextIndex];
+            return;
+        }
 
         var currentIndex = PlaybackQueue.IndexOf(CurrentSong);
         if (currentIndex == -1)
             return;
 
         var newIndex = currentIndex + direction;
+
         if (newIndex < 0 || newIndex >= PlaybackQueue.Count)
-            return;
+        {
+            // Repeat All wraps the queue around, whether the track ended naturally or the user clicked Next/Previous.
+            if (RepeatMode == RepeatMode.RepeatAll)
+            {
+                newIndex = direction > 0 ? 0 : PlaybackQueue.Count - 1;
+            }
+            else
+            {
+                return;
+            }
+        }
 
         CurrentSong = PlaybackQueue[newIndex];
     }
@@ -146,13 +233,17 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         if (_audioPlayer == null)
             return;
 
-        // Keep catching up Duration in case it wasn't ready when the player was first created.
         if (Duration <= 0 && _audioPlayer.Duration > 0)
             Duration = _audioPlayer.Duration;
 
         if (IsPlaying && !_isSeeking)
         {
             Position = _audioPlayer.CurrentPosition;
+
+            if (Duration > 0 && Position >= Duration - 0.5)
+            {
+                SkipBy(1, isAutoAdvance: true);
+            }
         }
     }
 
