@@ -13,6 +13,10 @@
             <Button Text="Settings" Clicked="OnSettingsClicked" />
         </HorizontalStackLayout>
 
+        <Entry Placeholder="Search by title or artist"
+               Text="{Binding SearchText}"
+               Margin="10,0" />
+
         <CollectionView x:Name="SongsCollectionView"
                          ItemsSource="{Binding Songs}"
                          SelectionMode="Single"

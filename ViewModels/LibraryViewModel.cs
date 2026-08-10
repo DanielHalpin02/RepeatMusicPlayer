@@ -23,6 +23,18 @@ public class LibraryViewModel : INotifyPropertyChanged
         }
     }
 
+    private string _searchText = string.Empty;
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            OnPropertyChanged();
+            RefreshSortedSongs();
+        }
+    }
+
     public LibraryViewModel()
     {
         _libraryService = App.LibraryService;
@@ -33,12 +45,22 @@ public class LibraryViewModel : INotifyPropertyChanged
     {
         Songs.Clear();
 
+        IEnumerable<Song> filtered = _libraryService.Songs;
+
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var search = SearchText.Trim();
+            filtered = filtered.Where(s =>
+                (s.Title != null && s.Title.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                (s.Artist != null && s.Artist.Contains(search, StringComparison.OrdinalIgnoreCase)));
+        }
+
         var sortOrder = App.SettingsService.DefaultSortOrder;
         IEnumerable<Song> sorted = sortOrder switch
         {
-            "Artist" => _libraryService.Songs.OrderBy(s => s.Artist),
-            "Album" => _libraryService.Songs.OrderBy(s => s.Album),
-            _ => _libraryService.Songs.OrderBy(s => s.Title),
+            "Artist" => filtered.OrderBy(s => s.Artist),
+            "Album" => filtered.OrderBy(s => s.Album),
+            _ => filtered.OrderBy(s => s.Title),
         };
 
         foreach (var song in sorted)
