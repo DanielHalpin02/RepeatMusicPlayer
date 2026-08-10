@@ -1,3 +1,4 @@
+using Plugin.Maui.Audio;
 using RepeatMusicPlayer.ViewModels;
 
 namespace RepeatMusicPlayer;
@@ -6,11 +7,17 @@ public partial class NowPlayingPage : ContentPage
 {
     private readonly NowPlayingViewModel _viewModel;
 
-    public NowPlayingPage()
+    public NowPlayingPage(IAudioManager audioManager)
     {
         InitializeComponent();
-        _viewModel = new NowPlayingViewModel();
+        _viewModel = new NowPlayingViewModel(audioManager);
         BindingContext = _viewModel;
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.StopAndDispose();
     }
 
     private void OnPlayPauseClicked(object sender, EventArgs e)
