@@ -6,6 +6,12 @@
 
     <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
 
+        <Image Source="{Binding AlbumArtUrl}"
+               HeightRequest="200"
+               WidthRequest="200"
+               Aspect="AspectFit"
+               HorizontalOptions="Center" />
+
         <Label Text="{Binding CurrentSong.Title}"
                FontSize="24"
                FontAttributes="Bold"

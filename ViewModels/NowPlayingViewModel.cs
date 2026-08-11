@@ -18,6 +18,7 @@ public class NowPlayingViewModel : INotifyPropertyChanged
     private IAudioPlayer _audioPlayer;
     private IDispatcherTimer _positionTimer;
     private readonly Random _random = new();
+    private int _albumArtRequestId;
 
     public List<Song> PlaybackQueue { get; set; } = new();
 
@@ -30,6 +31,7 @@ public class NowPlayingViewModel : INotifyPropertyChanged
             _currentSong = value;
             OnPropertyChanged();
             LoadSong();
+            _ = LoadAlbumArtAsync();
         }
     }
 
@@ -101,6 +103,17 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         }
     }
 
+    private string _albumArtUrl;
+    public string AlbumArtUrl
+    {
+        get => _albumArtUrl;
+        set
+        {
+            _albumArtUrl = value;
+            OnPropertyChanged();
+        }
+    }
+
     public NowPlayingViewModel(IAudioManager audioManager)
     {
         _audioManager = audioManager;
@@ -109,6 +122,23 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         _positionTimer.Interval = TimeSpan.FromMilliseconds(500);
         _positionTimer.Tick += (s, e) => UpdatePosition();
         _positionTimer.Start();
+    }
+
+    private async Task LoadAlbumArtAsync()
+    {
+        AlbumArtUrl = null;
+
+        if (CurrentSong == null)
+            return;
+
+        var requestId = ++_albumArtRequestId;
+        var url = await App.AlbumArtService.GetAlbumArtUrlAsync(CurrentSong.Artist, CurrentSong.Album);
+
+        // Ignore the result if the user has already moved on to a different song by the time this returns.
+        if (requestId == _albumArtRequestId)
+        {
+            AlbumArtUrl = url;
+        }
     }
 
     private void LoadSong()
@@ -190,7 +220,6 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         if (PlaybackQueue == null || PlaybackQueue.Count == 0 || CurrentSong == null)
             return;
 
-        // Repeat One only restarts the same track on natural end, not on a manual Next/Previous click.
         if (isAutoAdvance && RepeatMode == RepeatMode.RepeatOne)
         {
             SeekTo(0);
@@ -214,7 +243,6 @@ public class NowPlayingViewModel : INotifyPropertyChanged
 
         if (newIndex < 0 || newIndex >= PlaybackQueue.Count)
         {
-            // Repeat All wraps the queue around, whether the track ended naturally or the user clicked Next/Previous.
             if (RepeatMode == RepeatMode.RepeatAll)
             {
                 newIndex = direction > 0 ? 0 : PlaybackQueue.Count - 1;
