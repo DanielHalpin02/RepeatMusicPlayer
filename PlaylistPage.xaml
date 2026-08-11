@@ -4,7 +4,7 @@
              x:Class="RepeatMusicPlayer.PlaylistPage"
              Title="Playlists">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <VerticalStackLayout Padding="15" Spacing="15">
 
         <HorizontalStackLayout Spacing="10">
             <Entry x:Name="PlaylistNameEntry"
@@ -19,14 +19,16 @@
                          SelectionChanged="OnPlaylistSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="*,Auto" Padding="0,10">
-                        <Label Text="{Binding Name}" FontSize="18" VerticalOptions="Center" />
-                        <Button Grid.Column="1"
-                                Text="Delete"
-                                BackgroundColor="Red"
-                                TextColor="White"
-                                Clicked="OnDeletePlaylistClicked" />
-                    </Grid>
+                    <Frame Style="{StaticResource CardStyle}" Margin="0,6">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Name}" FontSize="18" VerticalOptions="Center" />
+                            <Button Grid.Column="1"
+                                    Text="Delete"
+                                    BackgroundColor="Red"
+                                    TextColor="White"
+                                    Clicked="OnDeletePlaylistClicked" />
+                        </Grid>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

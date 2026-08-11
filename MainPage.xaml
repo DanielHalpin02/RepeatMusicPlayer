@@ -6,7 +6,7 @@
 
     <VerticalStackLayout>
 
-        <HorizontalStackLayout Spacing="10" Padding="10">
+        <HorizontalStackLayout Spacing="10" Padding="15">
             <Button Text="Playlists" Clicked="OnPlaylistsClicked" />
             <Button Text="Add Song" Clicked="OnAddSongClicked" />
             <Button Text="Scan Folder" Clicked="OnScanFolderClicked" />
@@ -15,7 +15,7 @@
 
         <Entry Placeholder="Search by title or artist"
                Text="{Binding SearchText}"
-               Margin="10,0" />
+               Margin="15,0,15,10" />
 
         <CollectionView x:Name="SongsCollectionView"
                          ItemsSource="{Binding Songs}"
@@ -23,10 +23,12 @@
                          SelectionChanged="OnSongSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <VerticalStackLayout Padding="10">
-                        <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
-                        <Label Text="{Binding Artist}" FontSize="14" TextColor="Gray" />
-                    </VerticalStackLayout>
+                    <Frame Style="{StaticResource CardStyle}" Margin="15,6">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" />
+                            <Label Text="{Binding Artist}" FontSize="14" TextColor="{StaticResource Gray400}" />
+                        </VerticalStackLayout>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
