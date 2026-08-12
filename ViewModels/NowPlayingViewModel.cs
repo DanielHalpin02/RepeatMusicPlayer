@@ -152,9 +152,11 @@ public class NowPlayingViewModel : INotifyPropertyChanged
         {
             _audioPlayer = _audioManager.CreatePlayer(File.OpenRead(CurrentSong.FilePath));
             _audioPlayer.Volume = Volume;
-            IsPlaying = false;
             Position = 0;
             Duration = _audioPlayer.Duration;
+
+            _audioPlayer.Play();
+            IsPlaying = true;
         }
     }
 
